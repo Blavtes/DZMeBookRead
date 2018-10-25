@@ -11,10 +11,10 @@ import UIKit
 class DZMReadController: DZMViewController,DZMReadMenuDelegate,DZMCoverControllerDelegate,UIPageViewControllerDelegate,UIPageViewControllerDataSource {
     
     /// 阅读模型(必传)
-    var readModel:DZMReadModel!
+    @objc var readModel:DZMReadModel!
     
     /// 开启长按菜单
-    var openLongMenu:Bool = true
+    @objc var openLongMenu:Bool = true
     
     /// 阅读菜单UI
     private(set) var readMenu:DZMReadMenu!
@@ -150,7 +150,7 @@ class DZMReadController: DZMViewController,DZMReadMenuDelegate,DZMCoverControlle
         
         if readModel != nil && readModel.readRecordModel.isRecord { // 有阅读记录
         
-            let _ = readOperation.GoToChapter(chapterID: "\(readModel.readRecordModel.readChapterModel!.id.integerValue() - 1)")
+            let _ = readOperation.GoToChapter(chapterID: "\(readModel.readRecordModel.readChapterModel!.id.integer - 1)")
         }
     }
     
@@ -159,7 +159,7 @@ class DZMReadController: DZMViewController,DZMReadMenuDelegate,DZMCoverControlle
         
         if readModel != nil && readModel.readRecordModel.isRecord { // 有阅读记录
             
-            let _ = readOperation.GoToChapter(chapterID: "\(readModel.readRecordModel.readChapterModel!.id.integerValue() + 1)")
+            let _ = readOperation.GoToChapter(chapterID: "\(readModel.readRecordModel.readChapterModel!.id.integer + 1)")
         }
     }
     
@@ -291,7 +291,7 @@ class DZMReadController: DZMViewController,DZMReadMenuDelegate,DZMCoverControlle
                 
                 let direction = isAbove ? UIPageViewControllerNavigationDirection.reverse : UIPageViewControllerNavigationDirection.forward
                 
-                pageViewController?.setViewControllers([displayController!], direction: direction, animated: animated, completion: nil)
+                pageViewController?.setViewControllers([displayController!, readBGController(displayController!.view)], direction: direction, animated: animated, completion: nil)
                 
                 return
             }
@@ -389,11 +389,7 @@ class DZMReadController: DZMViewController,DZMReadMenuDelegate,DZMCoverControlle
         
         if abs(TempNumber) % 2 == 0 { // 背面
             
-            let vc = DZMReadBGController()
-            
-            vc.targetView = readOperation.GetAboveReadViewController()?.view
-            
-            return vc
+            return readBGController()
             
         }else{ // 内容
             
@@ -408,16 +404,22 @@ class DZMReadController: DZMViewController,DZMReadMenuDelegate,DZMCoverControlle
         
         if abs(TempNumber) % 2 == 0 { // 背面
             
-            let vc = DZMReadBGController()
-            
-            vc.targetView = readOperation.GetCurrentReadViewController()?.view
-            
-            return vc
+            return readBGController()
             
         }else{ // 内容
             
             return readOperation.GetBelowReadViewController()
         }
+    }
+    
+    /// 获取背面(只用于仿真模式背面显示)
+    private func readBGController(_ targetView:UIView? = nil) -> DZMReadBGController {
+        
+        let vc = DZMReadBGController()
+        
+        vc.targetView = targetView ?? readOperation.GetCurrentReadViewController()?.view
+        
+        return vc
     }
     
     override func didReceiveMemoryWarning() {

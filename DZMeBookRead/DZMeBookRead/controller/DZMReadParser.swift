@@ -22,7 +22,7 @@ class DZMReadParser: NSObject {
      
      - returns: ReadModel
      */
-    class func ParserLocalURL(url:URL,complete:((_ readModel:DZMReadModel) ->Void)?) {
+    @objc class func ParserLocalURL(url:URL,complete:((_ readModel:DZMReadModel) ->Void)?) {
        
         DispatchQueue.global().async {
             
@@ -43,7 +43,7 @@ class DZMReadParser: NSObject {
      
      - returns: ReadModel
      */
-    class func ParserLocalURL(url:URL) ->DZMReadModel {
+    @objc class func ParserLocalURL(url:URL) ->DZMReadModel {
         
         let bookID = GetFileName(url)
         
@@ -93,6 +93,9 @@ class DZMReadParser: NSObject {
         // 正则
         let parten = "第[0-9一二三四五六七八九十百千]*[章回].*"
         
+        // 排版
+        let content = ContentTypesetting(content: content)
+        
         // 搜索
         var results:[NSTextCheckingResult] = []
         
@@ -117,6 +120,9 @@ class DZMReadParser: NSObject {
             
             // 记录 上一章 模型
             var lastReadChapterModel:DZMReadChapterModel?
+            
+            // 有前言
+            var isPreface:Bool = true
             
             // 便利
             for i in 0...count {
@@ -145,10 +151,10 @@ class DZMReadParser: NSObject {
                 readChapterModel.bookID = bookID
                 
                 // 章节ID
-                readChapterModel.id = "\(i + 1)"
+                readChapterModel.id = "\(i + NSNumber(value: isPreface).intValue)"
                 
                 // 优先级
-                readChapterModel.priority = NSNumber(value: i)
+                readChapterModel.priority = NSNumber(value: (i - NSNumber(value: !isPreface).intValue))
                 
                 if i == 0 { // 开始
                     
@@ -156,13 +162,18 @@ class DZMReadParser: NSObject {
                     readChapterModel.name = "开始"
                     
                     // 内容
-                    readChapterModel.content = ContentTypesetting(content: content.substring(NSMakeRange(0, location)))
+                    readChapterModel.content = content.substring(NSMakeRange(0, location))
                     
                     // 记录
                     lastRange = range
                     
                     // 说不定没有内容 则不需要添加到列表
-                    if readChapterModel.content.isEmpty {continue}
+                    if readChapterModel.content.isEmpty {
+                        
+                        isPreface = false
+                        
+                        continue
+                    }
                     
                 }else if i == count { // 结尾
                     
@@ -170,7 +181,7 @@ class DZMReadParser: NSObject {
                     readChapterModel.name = content.substring(lastRange)
                     
                     // 内容
-                    readChapterModel.content = ContentTypesetting(content: content.substring(NSMakeRange(lastRange.location, content.length - lastRange.location)))
+                    readChapterModel.content = content.substring(NSMakeRange(lastRange.location, content.length - lastRange.location))
                     
                 }else { // 中间章节
                     
@@ -178,8 +189,11 @@ class DZMReadParser: NSObject {
                     readChapterModel.name = content.substring(lastRange)
                     
                     // 内容
-                    readChapterModel.content = ContentTypesetting(content: content.substring(NSMakeRange(lastRange.location, location - lastRange.location)))
+                    readChapterModel.content = content.substring(NSMakeRange(lastRange.location, location - lastRange.location))
                 }
+                
+                // 清空章节名,保留纯内容
+                readChapterModel.content = DZMParagraphHeaderSpace + readChapterModel.content.replacingOccurrences(of: readChapterModel.name, with: "").removeSpaceHeadAndTailPro
                 
                 // 分页
                 readChapterModel.updateFont()
@@ -218,7 +232,7 @@ class DZMReadParser: NSObject {
             readChapterModel.priority = NSNumber(value: 0)
             
             // 内容
-            readChapterModel.content = ContentTypesetting(content: content)
+            readChapterModel.content = DZMParagraphHeaderSpace + content.removeSpaceHeadAndTailPro
             
             // 分页
             readChapterModel.updateFont()
@@ -257,24 +271,10 @@ class DZMReadParser: NSObject {
     
     // MARK: -- 内容分页
     
-    /**
-     内容分页
-     
-     - parameter string: 内容
-     
-     - parameter rect: 范围
-     
-     - parameter attrs: 文字属性
-     
-     - returns: 每一页的起始位置数组
-     */
-    class func ParserPageRange(string:String, rect:CGRect, attrs:[NSAttributedStringKey:Any]?) ->[NSRange] {
-
-        // 记录
+    /// 内容分页 (内容 + 显示范围)
+    @objc class func ParserPageRange(attrString:NSAttributedString, rect:CGRect) ->[NSRange] {
+        
         var rangeArray:[NSRange] = []
-
-        // 拼接字符串
-        let attrString = NSMutableAttributedString(string: string, attributes: attrs)
         
         let frameSetter = CTFramesetterCreateWithAttributedString(attrString as CFAttributedString)
         
@@ -296,30 +296,28 @@ class DZMReadParser: NSObject {
             
         }while(range.location + range.length < attrString.length)
         
-        
         return rangeArray
     }
     
-    // MARK: -- 对内容进行整理排版 比如去掉多余的空格或者段头留2格等等
+    // MARK: -- 对内容进行整理排版
     
-    /// 内容排版整理
-    class func ContentTypesetting(content:String) ->String {
+    /// 内容排版整理 - 去除多余回车空格，段头留空。
+    @objc class func ContentTypesetting(content:String) ->String {
 
         // 替换单换行
         var content = content.replacingOccurrences(of: "\r", with: "")
         
         // 替换换行 以及 多个换行 为 换行加空格
-        content = content.replacing(pattern: "\\s*\\n+\\s*", template: "\n　　")
+        content = content.replacingCharacters("\\s*\\n+\\s*", "\n" + DZMParagraphHeaderSpace)
         
         // 返回
         return content
     }
     
-    
     // MARK: -- 解码URL
     
     /// 解码URL
-    class func EncodeURL(_ url:URL) ->String {
+    @objc class func EncodeURL(_ url:URL) ->String {
         
         var content = ""
         
@@ -365,11 +363,9 @@ class DZMReadParser: NSObject {
     // MARK: -- 获得 FrameRef CTFrame
     
     /// 获得 CTFrame
-    class func GetReadFrameRef(content:String, attrs:[NSAttributedStringKey:Any]?, rect:CGRect) ->CTFrame {
+    @objc class func GetReadFrameRef(attrString:NSMutableAttributedString, rect:CGRect) ->CTFrame {
         
-        let attributedString = NSMutableAttributedString(string: content,attributes: attrs)
-        
-        let framesetter = CTFramesetterCreateWithAttributedString(attributedString)
+        let framesetter = CTFramesetterCreateWithAttributedString(attrString)
         
         let path = CGPath(rect: rect, transform: nil)
         

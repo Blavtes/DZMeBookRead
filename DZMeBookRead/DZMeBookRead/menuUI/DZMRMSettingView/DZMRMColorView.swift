@@ -40,13 +40,13 @@ class DZMRMColorView: DZMRMBaseView {
 //
 //        let PublicButtonWH:CGFloat = 40
 //        
-//        let spaceW:CGFloat = (ScreenWidth - 2 * DZMSpace_1 - CGFloat(count) * PublicButtonWH) / CGFloat(count - 1)
+//        let spaceW:CGFloat = (ScreenWidth - 2 * DZMSpace_15 - CGFloat(count) * PublicButtonWH) / CGFloat(count - 1)
 //        
 //        for i in 0..<count {
 //            
 //            let color = colors[i]
 //            
-//            let publicButton = UIButton(frame:CGRect(x: DZMSpace_1 + CGFloat(i) * (PublicButtonWH + spaceW), y: DZMSpace_1, width: PublicButtonWH, height: PublicButtonWH))
+//            let publicButton = UIButton(frame:CGRect(x: DZMSpace_15 + CGFloat(i) * (PublicButtonWH + spaceW), y: DZMSpace_15, width: PublicButtonWH, height: PublicButtonWH))
 //            
 //            publicButton.tag = i
 //            
@@ -80,7 +80,7 @@ class DZMRMColorView: DZMRMBaseView {
 //        selectButton?.layer.borderColor = UIColor.clear.cgColor
 //        selectButton?.layer.borderWidth = 0
 //        
-//        button.layer.borderColor = DZMColor_2.cgColor
+//        button.layer.borderColor = DZMColor_253_85_103.cgColor
 //        button.layer.borderWidth = 2.0
 //        
 //        selectButton = button
@@ -102,13 +102,13 @@ class DZMRMColorView: DZMRMBaseView {
 
         let PublicButtonWH:CGFloat = DZMHaloButton.HaloButtonSize(CGSize(width: 39, height: 39)).width
         
-        let spaceW:CGFloat = (ScreenWidth - 2 * DZMSpace_1 - CGFloat(count) * PublicButtonWH) / CGFloat(count - 1)
+        let spaceW:CGFloat = (ScreenWidth - 2 * DZMSpace_15 - CGFloat(count) * PublicButtonWH) / CGFloat(count - 1)
         
         for i in 0..<count {
             
             let color = colors[i]
             
-            let publicButton = DZMHaloButton(CGRect(x: DZMSpace_1 + CGFloat(i) * (PublicButtonWH + spaceW), y: DZMSpace_1, width: PublicButtonWH, height: PublicButtonWH), haloColor:color)
+            let publicButton = DZMHaloButton(CGRect(x: DZMSpace_15 + CGFloat(i) * (PublicButtonWH + spaceW), y: DZMSpace_15, width: PublicButtonWH, height: PublicButtonWH), haloColor:color)
             
             publicButton.tag = i
             
@@ -140,7 +140,7 @@ class DZMRMColorView: DZMRMBaseView {
         selectButton?.imageView.layer.borderColor = UIColor.clear.cgColor
         selectButton?.imageView.layer.borderWidth = 0
         
-        button.imageView.layer.borderColor = DZMColor_2.cgColor
+        button.imageView.layer.borderColor = DZMColor_253_85_103.cgColor
         button.imageView.layer.borderWidth = 2.0
         
         selectButton = button

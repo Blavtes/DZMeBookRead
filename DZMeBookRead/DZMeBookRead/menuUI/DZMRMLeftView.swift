@@ -46,8 +46,8 @@ class DZMRMLeftView: DZMRMBaseView,DZMSegmentedControlDelegate,UITableViewDelega
         topView.selectTitles = ["章节","书签"]
         topView.horizontalShowTB = false
         topView.backgroundColor = UIColor.clear
-        topView.normalTitleColor = DZMColor_6
-        topView.selectTitleColor = DZMColor_2
+        topView.normalTitleColor = DZMColor_200_200_200
+        topView.selectTitleColor = DZMColor_253_85_103
         topView.setup()
         contentView.addSubview(topView)
     }
@@ -65,19 +65,18 @@ class DZMRMLeftView: DZMRMBaseView,DZMSegmentedControlDelegate,UITableViewDelega
                
                 DispatchQueue.global().async { [weak self] ()->Void in
                     
-                    for i in 0..<readChapterListModels.count {
+                    let models = readChapterListModels.filter { (model) -> Bool in
                         
-                        let model = readChapterListModels[i]
+                        return model.id == readChapterModel!.id
+                    }
+                    
+                    if !models.isEmpty {
                         
-                        if model.id == readChapterModel!.id {
+                        let row = readChapterListModels.index(of: models.first!)!
+                        
+                        DispatchQueue.main.async { [weak self] ()->Void in
                             
-                            // 更新UI
-                            DispatchQueue.main.async { [weak self] ()->Void in
-                                
-                                self?.tableView.scrollToRow(at: IndexPath(row: i, section: 0), at: UITableViewScrollPosition.middle, animated: false)
-                            }
-
-                            return
+                            self?.tableView.scrollToRow(at: IndexPath(row: row, section: 0), at: UITableViewScrollPosition.middle, animated: false)
                         }
                     }
                 }
@@ -161,7 +160,7 @@ class DZMRMLeftView: DZMRMBaseView,DZMSegmentedControlDelegate,UITableViewDelega
             cell?.textLabel?.font = DZMFont_12
         }
         
-        cell?.textLabel?.textColor = DZMColor_6
+        cell?.textLabel?.textColor = DZMColor_200_200_200
         
         return cell!
     }

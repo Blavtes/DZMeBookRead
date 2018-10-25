@@ -58,13 +58,13 @@ class DZMReadViewController: UIViewController,UITableViewDelegate,UITableViewDat
         topStatusView = UILabel()
         topStatusView.text = readRecordModel.readChapterModel?.name
         topStatusView.lineBreakMode = .byTruncatingMiddle
-        topStatusView.textColor = DZMColor_4
+        topStatusView.textColor = DZMColor_127_136_138
         topStatusView.font = DZMFont_12
-        topStatusView.frame = CGRect(x: DZMSpace_1, y: (isX ? TopLiuHeight : 0), width: view.width - 2 * DZMSpace_1, height: DZMSpace_2)
+        topStatusView.frame = CGRect(x: DZMSpace_15, y: (isX ? TopLiuHeight : 0), width: view.width - 2 * DZMSpace_15, height: DZMSpace_25)
         view.addSubview(topStatusView)
         
         // BottomStatusView
-        bottomStatusView = DZMRMStatusView(frame:CGRect(x: DZMSpace_1, y: view.frame.height - DZMSpace_2, width: view.width - 2 * DZMSpace_1, height: DZMSpace_2))
+        bottomStatusView = DZMRMStatusView(frame:CGRect(x: DZMSpace_15, y: view.frame.height - DZMSpace_25, width: view.width - 2 * DZMSpace_15, height: DZMSpace_25))
         bottomStatusView.backgroundColor = UIColor.clear
         bottomStatusView.titleLabel.text = "\(readRecordModel.page.intValue + 1)/\(readRecordModel.readChapterModel!.pageCount.intValue)"
         view.addSubview(bottomStatusView)
@@ -164,7 +164,7 @@ class DZMReadViewController: UIViewController,UITableViewDelegate,UITableViewDat
             
             let cell = DZMReadViewCell.cellWithTableView(tableView)
             
-            cell.content = readRecordModel.readChapterModel!.string(page: readRecordModel.page.intValue)
+            cell.content = readRecordModel.readChapterModel!.stringAttr(page: readRecordModel.page.intValue)
             
             readView = cell.readView
             
@@ -178,7 +178,7 @@ class DZMReadViewController: UIViewController,UITableViewDelegate,UITableViewDat
             
             let readChapterModel = DZMReadChapterModel.readChapterModel(bookID: readRecordModel.bookID, chapterID: dataArray[indexPath.section], isUpdateFont: true)
             
-            cell.content = readChapterModel.string(page: indexPath.row)
+            cell.content = readChapterModel.stringAttr(page: indexPath.row)
             
             return cell
         }
@@ -201,7 +201,7 @@ class DZMReadViewController: UIViewController,UITableViewDelegate,UITableViewDat
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         
-        if DZMReadConfigure.shared().effectType == DZMRMEffectType.upAndDown.rawValue { // 非上下滚动
+        if DZMReadConfigure.shared().effectType == DZMRMEffectType.upAndDown.rawValue { // 上下滚动
             
             // 获得当前模型
             let readChapterModel = DZMReadChapterModel.readChapterModel(bookID: readRecordModel.bookID, chapterID: dataArray[section], isUpdateFont: true)
@@ -310,7 +310,7 @@ class DZMReadViewController: UIViewController,UITableViewDelegate,UITableViewDat
                 let rect = GetReadTableViewFrame()
                 
                 // 显示章节Cell IndexPath
-                var indexPath = tableView.indexPathsForRows(in: CGRect(x: 0, y: tableView.contentOffset.y + DZMSpace_1, width: rect.width, height: rect.height - DZMSpace_1))!.first!
+                var indexPath = tableView.indexPathsForRows(in: CGRect(x: 0, y: tableView.contentOffset.y + DZMSpace_15, width: rect.width, height: rect.height - DZMSpace_15))!.first!
                 
                 // 章节ID
                 let chapterID:String = "\(dataArray[indexPath.section])"

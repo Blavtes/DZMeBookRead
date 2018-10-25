@@ -27,24 +27,24 @@ class DZMRMStatusView: DZMRMBaseView {
         super.addSubviews()
         
         // 背景颜色
-        backgroundColor = DZMColor_1.withAlphaComponent(0.4)
+        backgroundColor = DZMColor_51_51_51.withAlphaComponent(0.4)
         
         // 电池
         batteryView = DZMBatteryView()
-        batteryView.tintColor = DZMColor_3
+        batteryView.tintColor = DZMColor_127_136_138
         addSubview(batteryView)
         
         // 时间
         timeLabel = UILabel()
         timeLabel.textAlignment = .center
         timeLabel.font = DZMFont_12
-        timeLabel.textColor = DZMColor_3
+        timeLabel.textColor = DZMColor_127_136_138
         addSubview(timeLabel)
         
         // 标题
         titleLabel = UILabel()
         titleLabel.font = DZMFont_12
-        titleLabel.textColor = DZMColor_3
+        titleLabel.textColor = DZMColor_127_136_138
         addSubview(titleLabel)
         
         // 初始化调用
@@ -59,7 +59,7 @@ class DZMRMStatusView: DZMRMBaseView {
         super.layoutSubviews()
         
         // 适配间距
-        let space = isX ? DZMSpace_1 : 0
+        let space = isX ? DZMSpace_15 : 0
         
         // 电池
         batteryView.origin = CGPoint(x: width - DZMBatterySize.width - space, y: (height - DZMBatterySize.height)/2)
@@ -99,7 +99,7 @@ class DZMRMStatusView: DZMRMBaseView {
     /// 时间变化
     @objc func didChangeTime() {
         
-        timeLabel.text = GetCurrentTimerString(dateFormat: "HH:mm")
+        timeLabel.text = GetTimerString(dateFormat: "HH:mm")
         
         batteryView.batteryLevel = UIDevice.current.batteryLevel
     }

@@ -91,15 +91,11 @@ class DZMReadModel: NSObject,NSCoding {
     /// 通过ID获得章节列表模型
     func GetReadChapterListModel(chapterID:String) ->DZMReadChapterListModel? {
         
-        for model in readChapterListModels {
+       return readChapterListModels.filter { (model) -> Bool in
             
-            if model.id == chapterID {
-                
-                return model
-            }
-        }
-        
-        return nil
+            return model.id == chapterID
+            
+        }.first
     }
     
     // MARK: -- 操作 - 书签
@@ -107,7 +103,7 @@ class DZMReadModel: NSObject,NSCoding {
     /// 添加书签 默认使用当前阅读记录作为书签
     func addMark(readRecordModel:DZMReadRecordModel? = nil) {
         
-        let readRecordModel = (readRecordModel != nil ? readRecordModel : self.readRecordModel)!
+        let readRecordModel = (readRecordModel ?? self.readRecordModel)!
         
         let readMarkModel = DZMReadMarkModel()
         
@@ -126,6 +122,8 @@ class DZMReadModel: NSObject,NSCoding {
         readMarkModels.append(readMarkModel)
         
         save()
+        
+        self.readMarkModel = readMarkModel
     }
     
     /// 删除书签 默认使用当前存在的书签
@@ -141,7 +139,7 @@ class DZMReadModel: NSObject,NSCoding {
             
         }else{
             
-            let readMarkModel = (readMarkModel != nil ? readMarkModel : self.readMarkModel)
+            let readMarkModel = readMarkModel ?? self.readMarkModel
             
             if readMarkModel != nil && readMarkModels.contains(readMarkModel!) {
                 
@@ -159,19 +157,15 @@ class DZMReadModel: NSObject,NSCoding {
     /// 检查当前页面是否存在书签 默认使用当前阅读记录作为检查对象
     func checkMark(readRecordModel:DZMReadRecordModel? = nil) ->Bool {
         
-        let readRecordModel = (readRecordModel != nil ? readRecordModel : self.readRecordModel)!
+        let readRecordModel = (readRecordModel ?? self.readRecordModel)!
         
         let chapterID = readRecordModel.readChapterModel!.id
         
-        var results:[DZMReadMarkModel] = []
-        
-        for model in readMarkModels {
+        let results = readMarkModels.filter { (model) -> Bool in
             
-            if model.id == chapterID {
-                
-                results.append(model)
+            return model.id == chapterID
+            
             }
-        }
         
         if !results.isEmpty {
             

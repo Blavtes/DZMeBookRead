@@ -11,22 +11,33 @@ import UIKit
 // MARK: -- 颜色
 /// RGB
 func RGB(_ r:CGFloat,g:CGFloat,b:CGFloat) -> UIColor {
+    
     return RGBA(r, g: g, b: b, a: 1.0)
 }
 
 /// RGBA
 func RGBA(_ r:CGFloat,g:CGFloat,b:CGFloat,a:CGFloat) -> UIColor {
+    
     return UIColor(red: r/255.0, green: g/255.0, blue: b/255.0, alpha: a)
 }
 
 
 // MARK: -- 尺寸计算 以iPhone6为比例
 func DZMSizeW(_ size:CGFloat) ->CGFloat {
+    
     return size * (ScreenWidth / 375)
 }
 
 func DZMSizeH(_ size:CGFloat) ->CGFloat{
+    
     return size * (ScreenHeight / 667)
+}
+
+// MARK: 公用
+/// 章节内容标题
+func DZMContentTitle(_ name:String)->String {
+    
+    return "\n\(name)\n\n"
 }
 
 // MARK: 截屏
@@ -62,18 +73,9 @@ func SpaceLineSetup(view:UIView, color:UIColor? = nil) ->UIView {
 }
 
 // MARK: -- 获取时间
-/// 获取当前时间传入 时间格式 "YYYY-MM-dd-HH-mm-ss"
-func GetCurrentTimerString(dateFormat:String) ->String {
-    
-    let dateformatter = DateFormatter()
-    
-    dateformatter.dateFormat = dateFormat
-    
-    return dateformatter.string(from: Date())
-}
 
-/// 将 时间 根据 类型 转成 时间字符串
-func GetTimerString(dateFormat:String, date:Date) ->String {
+/// 传入时间以及格式获得对应时间字符串 "YYYY-MM-dd-HH-mm-ss"
+func GetTimerString(dateFormat:String, date:Date = Date()) ->String {
     
     let dateformatter = DateFormatter()
     
@@ -82,10 +84,10 @@ func GetTimerString(dateFormat:String, date:Date) ->String {
     return dateformatter.string(from: date)
 }
 
-/// 获取当前的 TimeIntervalSince1970 时间字符串
-func GetCurrentTimeIntervalSince1970String() -> String {
+/// 获取时间戳
+func GetTime1970String(date:Date = Date()) -> String {
     
-    return String(format: "%.0f",Date().timeIntervalSince1970)
+    return String(format: "%.0f",date.timeIntervalSince1970)
 }
 
 
@@ -96,18 +98,18 @@ func GetReadTableViewFrame() ->CGRect {
     if isX {
         
         // Y = 刘海高度 + 状态View高 + 间距
-        let y =  TopLiuHeight + DZMSpace_2 + DZMSpace_6
+        let y =  TopLiuHeight + DZMSpace_25 + DZMSpace_10
         
         let bottomHeight = TopLiuHeight
         
-        return CGRect(x: DZMSpace_1, y: y, width: ScreenWidth - 2 * DZMSpace_1, height: ScreenHeight - y - bottomHeight)
+        return CGRect(x: DZMSpace_15, y: y, width: ScreenWidth - 2 * DZMSpace_15, height: ScreenHeight - y - bottomHeight)
         
     }else{
         
         // Y =  状态View高 + 间距
-        let y =  DZMSpace_2 + DZMSpace_6
+        let y =  DZMSpace_25 + DZMSpace_10
         
-        return CGRect(x: DZMSpace_1, y: y, width: ScreenWidth - 2 * DZMSpace_1, height: ScreenHeight - 2 * y)
+        return CGRect(x: DZMSpace_15, y: y, width: ScreenWidth - 2 * DZMSpace_15, height: ScreenHeight - 2 * y)
     }
 }
 
@@ -151,13 +153,13 @@ func CreatFilePath(_ filePath:String) ->Bool {
 /// 文件类型
 func GetFileExtension(_ url:URL) ->String {
     
-    return url.path.pathExtension()
+    return url.path.pathExtension
 }
 
 /// 文件名称
 func GetFileName(_ url:URL) ->String {
     
-    return url.path.lastPathComponent().stringByDeletingPathExtension()
+    return url.path.lastPathComponent.deletingPathExtension
 }
 
 
